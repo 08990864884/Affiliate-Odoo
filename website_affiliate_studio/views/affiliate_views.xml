@@ -1,0 +1,185 @@
+<odoo>
+    <record id="affiliate_tree" model="ir.ui.view">
+        <field name="name">wa.affiliate.affiliate_tree</field>
+        <field name="model">wa.affiliate</field>
+        <field name="arch" type="xml"><tree decoration-success="state == 'active'" decoration-muted="state in ('rejected', 'paused')"><field name="name"/><field name="partner_id"/><field name="company_id"/><field name="currency_id" invisible="1"/><field name="click_count"/><field name="order_count"/><field name="conversion_rate"/><field name="earnings"/><field name="available"/><field name="state" widget="badge"/></tree></field>
+    </record>
+    <record id="affiliate_form" model="ir.ui.view">
+        <field name="name">wa.affiliate.affiliate_form</field>
+        <field name="model">wa.affiliate</field>
+        <field name="arch" type="xml"><form><header><button name="action_approve" type="object" string="Approve" groups="website_affiliate_studio.group_affiliate_manager" class="oe_highlight" attrs="{'invisible':[('state','=','active')]}"/><button name="action_decline" type="object" string="Decline" groups="website_affiliate_studio.group_affiliate_manager" attrs="{'invisible':[('state','!=','pending')]}"/><button name="action_pause" type="object" string="Pause" groups="website_affiliate_studio.group_affiliate_manager" attrs="{'invisible':[('state','!=','active')]}"/><button name="action_create_coupon" type="object" string="Generate discount code" groups="website_affiliate_studio.group_affiliate_manager" attrs="{'invisible':['|',('state','!=','active'),('program_id','!=',False)]}"/><field name="state" widget="statusbar" statusbar_visible="pending,active,paused"/></header><sheet><div class="oe_title"><h1><field name="name"/></h1></div><group><group><field name="partner_id"/><field name="company_id"/><field name="code"/><field name="coupon_code"/><field name="share_url" widget="url"/><field name="program_id" invisible="1"/></group><group><field name="currency_id" invisible="1"/><field name="click_count"/><field name="order_count"/><field name="conversion_rate"/><field name="earnings"/><field name="available"/></group></group><group string="Application"><field name="application"/></group></sheet><div class="oe_chatter"><field name="message_follower_ids"/><field name="message_ids"/></div></form></field>
+    </record>
+    <record id="affiliate_search" model="ir.ui.view">
+        <field name="name">wa.affiliate.affiliate_search</field>
+        <field name="model">wa.affiliate</field>
+        <field name="arch" type="xml"><search><field name="name"/><field name="partner_id"/><field name="code"/><filter name="active_affiliates" string="Active" domain="[('state','=','active')]"/><filter name="affiliate_company" string="Company" context="{'group_by':'company_id'}"/></search></field>
+    </record>
+    <record id="entry_tree" model="ir.ui.view">
+        <field name="name">wa.entry.entry_tree</field>
+        <field name="model">wa.entry</field>
+        <field name="arch" type="xml"><tree create="0" edit="0" decoration-warning="state == 'review'" decoration-danger="amount &lt; 0"><field name="order_id"/><field name="affiliate_id"/><field name="company_id"/><field name="currency_id"/><field name="ready_date"/><field name="amount" sum="Total commission"/><field name="state" widget="badge"/><field name="reason"/></tree></field>
+    </record>
+    <record id="entry_form" model="ir.ui.view">
+        <field name="name">wa.entry.entry_form</field>
+        <field name="model">wa.entry</field>
+        <field name="arch" type="xml"><form create="0" edit="0"><header><button name="action_accept_review" type="object" string="Approve commission" class="oe_highlight" attrs="{'invisible':['|',('state','!=','review'),('original_id','!=',False)]}"/><button name="action_reject_review" type="object" string="Reject commission" attrs="{'invisible':['|',('state','!=','review'),('original_id','!=',False)]}"/><field name="state" widget="statusbar"/></header><sheet><group><group><field name="order_id"/><field name="affiliate_id"/><field name="line_id"/><field name="company_id"/><field name="currency_id"/><field name="amount"/><field name="ready_date"/><field name="rule_id"/></group><group><field name="base_amount"/><field name="order_currency_id"/><field name="reason"/><field name="original_id"/><field name="credit_id"/><field name="payout_id"/></group></group></sheet></form></field>
+    </record>
+    <record id="entry_search" model="ir.ui.view">
+        <field name="name">wa.entry.entry_search</field>
+        <field name="model">wa.entry</field>
+        <field name="arch" type="xml"><search><field name="order_id"/><field name="affiliate_id"/><field name="state"/><filter name="entry_review" string="Review" domain="[('state','=','review')]"/><filter name="entry_available" string="Available" domain="[('state','=','payable')]"/><filter name="entry_adjustment" string="Adjustments" domain="[('original_id','!=',False)]"/><group expand="0" string="Group By"><filter name="entry_by_affiliate" string="Affiliate" context="{'group_by':'affiliate_id'}"/><filter name="entry_by_month" string="Month" context="{'group_by':'create_date:month'}"/><filter name="entry_by_state" string="Status" context="{'group_by':'state'}"/></group></search></field>
+    </record>
+    <record id="entry_pivot" model="ir.ui.view">
+        <field name="name">wa.entry.entry_pivot</field>
+        <field name="model">wa.entry</field>
+        <field name="arch" type="xml"><pivot string="Commissions"><field name="affiliate_id" type="row"/><field name="create_date" interval="month" type="col"/><field name="amount" type="measure"/></pivot></field>
+    </record>
+    <record id="entry_graph" model="ir.ui.view">
+        <field name="name">wa.entry.entry_graph</field>
+        <field name="model">wa.entry</field>
+        <field name="arch" type="xml"><graph string="Affiliate commissions"><field name="create_date" interval="month"/><field name="amount" type="measure"/></graph></field>
+    </record>
+    <record id="rule_tree" model="ir.ui.view">
+        <field name="name">wa.rule.rule_tree</field>
+        <field name="model">wa.rule</field>
+        <field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="scope"/><field name="categ_id"/><field name="product_id"/><field name="rate_type"/><field name="percent"/><field name="fixed_amount"/><field name="monthly_minimum"/><field name="affiliate_ids"/><field name="company_id"/><field name="currency_id"/></tree></field>
+    </record>
+    <record id="rule_form" model="ir.ui.view">
+        <field name="name">wa.rule.rule_form</field>
+        <field name="model">wa.rule</field>
+        <field name="arch" type="xml"><form><sheet><group><group><field name="name"/><field name="active"/><field name="sequence"/><field name="company_id"/><field name="currency_id"/> <field name="scope" /><field name="categ_id" attrs="{'invisible':[('scope','!=','category')], 'required':[('scope','=','category')]}"/><field name="product_id" attrs="{'invisible':[('scope','!=','product')], 'required':[('scope','=','product')]}"/><field name="affiliate_ids" widget="many2many_tags" domain="[('company_id','=',company_id)]"/></group><group><field name="rate_type"/><field name="monthly_minimum"/><field name="percent" attrs="{'invisible':[('rate_type','!=','percent')]}"/><field name="fixed_amount" attrs="{'invisible':[('rate_type','=','percent')]}"/></group></group></sheet></form></field>
+    </record>
+    <record id="payout_tree" model="ir.ui.view">
+        <field name="name">wa.payout.payout_tree</field>
+        <field name="model">wa.payout</field>
+        <field name="arch" type="xml"><tree create="0" edit="0"><field name="reference"/><field name="affiliate_id"/><field name="company_id"/><field name="currency_id"/><field name="source"/><field name="amount"/><field name="bill_id"/><field name="paid_date"/><field name="state" widget="badge"/></tree></field>
+    </record>
+    <record id="payout_form" model="ir.ui.view">
+        <field name="name">wa.payout.payout_form</field>
+        <field name="model">wa.payout</field>
+        <field name="arch" type="xml"><form create="0" edit="0"><header><button name="action_create_bill" type="object" string="Create draft vendor bill" groups="website_affiliate_studio.group_affiliate_manager" class="oe_highlight" attrs="{'invisible':[('state','!=','requested')]}"/><button name="action_cancel" type="object" string="Release settlement" groups="website_affiliate_studio.group_affiliate_manager" attrs="{'invisible':[('state','not in',('requested','billed'))]}"/><field name="state" widget="statusbar"/></header><sheet><div class="oe_title"><h1><field name="reference"/></h1></div><group><group><field name="affiliate_id"/><field name="company_id"/><field name="currency_id"/><field name="source"/></group><group><field name="amount"/><field name="bill_id"/><field name="paid_date"/></group></group><notebook><page string="Commission lines"><field name="entry_ids"><tree create="0" edit="0"><field name="order_id"/><field name="line_id"/><field name="amount"/><field name="currency_id"/><field name="state"/></tree></field></page></notebook></sheet><div class="oe_chatter"><field name="message_follower_ids"/><field name="message_ids"/></div></form></field>
+    </record>
+    <record id="click_tree" model="ir.ui.view">
+        <field name="name">wa.click.click_tree</field>
+        <field name="model">wa.click</field>
+        <field name="arch" type="xml"><tree create="0" edit="0"><field name="create_date"/><field name="affiliate_id"/><field name="company_id"/><field name="website_id"/><field name="target"/></tree></field>
+    </record>
+    <record id="click_pivot" model="ir.ui.view">
+        <field name="name">wa.click.click_pivot</field>
+        <field name="model">wa.click</field>
+        <field name="arch" type="xml"><pivot string="Referral clicks"><field name="affiliate_id" type="row"/><field name="create_date" interval="month" type="col"/></pivot></field>
+    </record>
+    <record id="click_graph" model="ir.ui.view">
+        <field name="name">wa.click.click_graph</field>
+        <field name="model">wa.click</field>
+        <field name="arch" type="xml"><graph string="Referral clicks"><field name="create_date" interval="day"/><field name="affiliate_id"/></graph></field>
+    </record>
+    <record id="settings_form" model="ir.ui.view">
+        <field name="name">wa.settings.settings_form</field>
+        <field name="model">wa.settings</field>
+        <field name="arch" type="xml"><form string="Affiliate program settings"><sheet>
+    <group><field name="company_id"/><field name="currency_id" invisible="1"/><field name="aff_enabled"/></group>
+    <group><group string="Attribution"><field name="aff_cookie_days"/><field name="aff_attribution"/><field name="aff_repeat_months"/><field name="aff_discount"/></group>
+    <group string="Commission"><field name="aff_trigger"/><field name="aff_hold_days"/><field name="aff_exclude_shipping"/></group>
+    <group string="Applications and review"><field name="aff_auto_approve"/><field name="aff_block_self"/><field name="aff_review_ip"/></group>
+    <group string="Settlement"><field name="aff_min_payout"/><field name="aff_expense_account_id"/><field name="aff_purchase_journal_id"/></group></group>
+    <group><field name="aff_terms"/></group>
+    </sheet><footer><button name="action_save" type="object" string="Save settings" class="btn-primary"/><button special="cancel" string="Close" class="btn-secondary"/></footer></form></field>
+    </record>
+    <record id="affiliate_sale_order_form" model="ir.ui.view">
+        <field name="name">sale.order.affiliate.studio</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Affiliate" groups="website_affiliate_studio.group_affiliate_user" attrs="{'invisible':[('wa_affiliate_id','=',False)]}">
+                    <group><group><field name="wa_affiliate_id"/><field name="wa_source"/><field name="wa_self_blocked"/><field name="wa_processed"/></group><group><field name="wa_credited_at"/><field name="wa_volume"/></group></group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_affiliates" model="ir.actions.act_window">
+        <field name="name">Affiliate profiles</field>
+        <field name="res_model">wa.affiliate</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_applications" model="ir.actions.act_window">
+        <field name="name">Affiliate applications</field>
+        <field name="res_model">wa.affiliate</field>
+        <field name="view_mode">tree,form</field><field name="domain">[('state','=','pending')]</field>
+    </record>
+    <record id="action_entries" model="ir.actions.act_window">
+        <field name="name">Commission ledger</field>
+        <field name="res_model">wa.entry</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_review" model="ir.actions.act_window">
+        <field name="name">Commissions to review</field>
+        <field name="res_model">wa.entry</field>
+        <field name="view_mode">tree,form</field><field name="domain">[('state','=','review'),('original_id','=',False)]</field>
+    </record>
+    <record id="action_payouts" model="ir.actions.act_window">
+        <field name="name">Affiliate settlements</field>
+        <field name="res_model">wa.payout</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_rules" model="ir.actions.act_window">
+        <field name="name">Commission rules</field>
+        <field name="res_model">wa.rule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_analysis" model="ir.actions.act_window">
+        <field name="name">Commission analysis</field>
+        <field name="res_model">wa.entry</field>
+        <field name="view_mode">pivot,graph,tree</field><field name="domain">[('state','not in',('void','review'))]</field><field name="context">{'search_default_entry_by_affiliate': 1}</field>
+    </record>
+    <record id="action_clicks" model="ir.actions.act_window">
+        <field name="name">Referral activity</field>
+        <field name="res_model">wa.click</field>
+        <field name="view_mode">graph,pivot,tree</field>
+    </record>
+    <record id="action_settings" model="ir.actions.act_window">
+        <field name="name">Affiliate program settings</field>
+        <field name="res_model">wa.settings</field>
+        <field name="view_mode">form</field><field name="target">new</field>
+    </record>
+    <record id="action_batch" model="ir.actions.server">
+        <field name="name">Create batch vendor bills</field>
+        <field name="model_id" ref="model_wa_affiliate"/>
+        <field name="binding_model_id" ref="model_wa_affiliate"/>
+        <field name="groups_id" eval="[(4, ref('group_affiliate_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = (records or model).action_batch_payout()</field>
+    </record>
+    <menuitem id="menu_affiliate" name="Affiliate Studio" web_icon="website_affiliate_studio,static/description/icon.png" groups="group_affiliate_user" sequence="58"/>
+    <menuitem id="menu_profiles" name="Affiliates" parent="menu_affiliate" action="action_affiliates" sequence="10" />
+    <menuitem id="menu_applications" name="Applications" parent="menu_affiliate" action="action_applications" sequence="20" />
+    <menuitem id="menu_entries" name="Commission ledger" parent="menu_affiliate" action="action_entries" sequence="30" />
+    <menuitem id="menu_review" name="Review queue" parent="menu_affiliate" action="action_review" sequence="40" />
+    <menuitem id="menu_payouts" name="Settlements" parent="menu_affiliate" action="action_payouts" sequence="50" />
+    <menuitem id="menu_batch" name="Create batch vendor bills" parent="menu_payouts" action="action_batch" sequence="10" groups="group_affiliate_manager"/>
+    <menuitem id="menu_payout_list" name="All settlements" parent="menu_payouts" action="action_payouts" sequence="5" />
+    <menuitem id="menu_reporting" name="Reports" parent="menu_affiliate"  sequence="60" />
+    <menuitem id="menu_analysis" name="Commission analysis" parent="menu_reporting" action="action_analysis" sequence="10" />
+    <menuitem id="menu_clicks" name="Referral activity" parent="menu_reporting" action="action_clicks" sequence="20" />
+    <menuitem id="menu_config" name="Configuration" parent="menu_affiliate"  sequence="70" groups="group_affiliate_manager"/>
+    <menuitem id="menu_settings" name="Program settings" parent="menu_config" action="action_settings" sequence="10" />
+    <menuitem id="menu_rules" name="Commission rules" parent="menu_config" action="action_rules" sequence="20" />
+    <record id="leaderboard_tree" model="ir.ui.view">
+        <field name="name">wa.leaderboard.tree</field>
+        <field name="model">wa.leaderboard</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="affiliate_id"/><field name="company_id"/><field name="currency_id" invisible="1"/>
+                <field name="click_count"/><field name="order_count"/><field name="conversion_rate"/>
+                <field name="earnings"/><field name="available"/><field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_leaderboard" model="ir.actions.act_window">
+        <field name="name">Affiliate leaderboard</field>
+        <field name="res_model">wa.leaderboard</field>
+        <field name="view_mode">tree</field>
+    </record>
+    <menuitem id="menu_leaderboard" name="Affiliate leaderboard" parent="menu_reporting" action="action_leaderboard" sequence="5"/>
+</odoo>

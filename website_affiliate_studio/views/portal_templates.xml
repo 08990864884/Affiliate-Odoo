@@ -1,0 +1,161 @@
+<odoo>
+    <template id="affiliate_landing" name="Affiliate Studio application">
+        <t t-call="website.layout">
+            <div id="wrap" class="was-portal">
+                <main class="container was-landing py-5">
+                    <div class="row g-4 align-items-start">
+                        <section class="col-lg-7">
+                            <div class="was-hero was-hero-photo">
+                                <div class="was-hero-copy">
+                                    <h1>Become an affiliate</h1>
+                                    <p>Share your referral link or discount code. Follow eligible orders and commissions from your account.</p>
+                                </div>
+                                <img class="was-enrollment-image" src="/website_affiliate_studio/static/src/img/affiliate-enrollment.jpg"
+                                     width="1120" height="630" alt="Online shop creator preparing parcels at her desk" decoding="async"/>
+                            </div>
+                            <section class="was-card mt-4" t-if="program_terms">
+                                <h2>Program terms</h2>
+                                <p class="was-terms" t-out="program_terms"/>
+                            </section>
+                        </section>
+                        <section class="col-lg-5">
+                            <div class="was-card">
+                                <t t-if="profile">
+                                    <h2>Your application</h2>
+                                    <a href="/my/affiliate" class="btn was-button">Open Affiliate Studio</a>
+                                </t>
+                                <t t-elif="is_public_user">
+                                    <h2>Apply with your account</h2>
+                                    <a class="btn was-button" href="/web/login?redirect=%2Faffiliate">Sign in to apply</a>
+                                </t>
+                                <t t-else="">
+                                    <h2>Apply to join</h2>
+                                    <form action="/affiliate/apply" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <label class="form-label" for="was-application">Where will you share your links?</label>
+                                        <textarea class="form-control mb-3" id="was-application" name="application" rows="4" maxlength="2000"/>
+                                        <button type="submit" class="btn was-button">Submit application</button>
+                                    </form>
+                                </t>
+                            </div>
+                        </section>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_affiliate_home" name="Affiliate Studio portal shortcut" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="request.website and request.website.sudo().company_id.aff_enabled">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Affiliate Studio</t>
+                    <t t-set="url" t-value="'/my/affiliate'"/>
+                    <t t-set="placeholder_count" t-value="'wa_affiliate_count'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="affiliate_dashboard" name="Affiliate Studio">
+        <t t-call="portal.portal_layout">
+            <main class="was-portal was-dashboard">
+                <header class="was-hero mb-4">
+                    <h1>Affiliate Studio</h1>
+                    <p t-out="profile.partner_id.name"/>
+                </header>
+                <t t-if="profile.state != 'active'">
+                    <section class="was-card">
+                        <h2>Application status</h2>
+                        <span t-field="profile.state"/>
+                    </section>
+                </t>
+                <t t-else="">
+                    <div t-if="message" role="status" class="alert alert-info" t-out="message"/>
+                    <div class="was-metrics mb-4">
+                        <div class="was-card"><span>Referral clicks</span><strong t-out="profile.click_count"/></div>
+                        <div class="was-card"><span>Credited orders</span><strong t-out="profile.order_count"/></div>
+                        <div class="was-card"><span>Commission earned</span><strong t-field="profile.earnings"/></div>
+                        <div class="was-card"><span>Available to withdraw</span><strong t-field="profile.available"/></div>
+                    </div>
+                    <div class="row g-4 mb-4">
+                        <section class="col-lg-6">
+                            <div class="was-card h-100">
+                                <h2>Referral link</h2>
+                                <form action="/my/affiliate" method="get">
+                                    <label class="form-label" for="was-target">Shop page path</label>
+                                    <div class="input-group mb-3">
+                                        <input class="form-control" type="text" id="was-target" name="target" t-att-value="target" required="required"/>
+                                        <button class="btn btn-outline-secondary" type="submit">Build link</button>
+                                    </div>
+                                </form>
+                                <label class="form-label" for="was-link">Share this URL</label>
+                                <input class="form-control was-code" readonly="readonly" id="was-link" t-att-value="share_url"/>
+                                <p class="mt-3 mb-0" t-if="profile.coupon_code">Discount code <code t-out="profile.coupon_code"/></p>
+                            </div>
+                        </section>
+                        <section class="col-lg-6">
+                            <div class="was-card h-100">
+                                <h2>Clicks over the last 14 days</h2>
+                                <div class="was-chart">
+                                    <div class="was-chart-day" t-foreach="trend" t-as="item" t-att-title="'%s: %s' % (item[0], item[1])">
+                                        <span class="visually-hidden" t-out="'%s: %s' % (item[0], item[1])"/>
+                                        <span class="was-chart-bar" t-att-style="'height: %dpx' % max(2, item[2])"/>
+                                        <small t-out="item[0]"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <section class="was-card mb-4">
+                        <h2>Commission activity</h2>
+                        <p t-if="not entries" class="mb-0">Your credited orders will appear here.</p>
+                        <div t-if="entries" class="table-responsive">
+                            <table class="table align-middle"><thead><tr><th>Date</th><th>Order</th><th>Status</th><th class="text-end">Amount</th></tr></thead>
+                            <tbody><tr t-foreach="entries" t-as="entry">
+                                <td><span t-field="entry.create_date" t-options="{'widget': 'date'}"/></td>
+                                <td><span t-field="entry.order_id.name"/></td>
+                                <td><span t-field="entry.state"/></td>
+                                <td class="text-end"><span t-field="entry.amount"/></td>
+                            </tr></tbody></table>
+                        </div>
+                        <nav t-if="page &gt; 1 or has_next" aria-label="Commission history">
+                            <a t-if="page &gt; 1" class="btn btn-light" t-att-href="'/my/affiliate?page=%d' % (page - 1)">Previous</a>
+                            <a t-if="has_next" class="btn btn-light" t-att-href="'/my/affiliate?page=%d' % (page + 1)">Next</a>
+                        </nav>
+                    </section>
+                    <section class="was-card mb-4">
+                        <div class="d-flex flex-wrap justify-content-between gap-3">
+                            <div><h2>Payouts</h2><p>Minimum request <span t-field="company.aff_min_payout"/></p></div>
+                            <form action="/my/affiliate/payout" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button class="btn was-button" type="submit" t-att-disabled="profile.available &lt;= 0 or profile.available &lt; company.aff_min_payout">Request payout</button>
+                            </form>
+                        </div>
+                        <p t-if="not payouts" class="mb-0">Your settlements will appear here.</p>
+                        <div t-if="payouts" class="table-responsive">
+                            <table class="table align-middle"><thead><tr><th>Reference</th><th>Status</th><th>Paid date</th><th class="text-end">Amount</th></tr></thead>
+                            <tbody><tr t-foreach="payouts" t-as="payout"><td t-out="payout.reference"/><td><span t-field="payout.state"/></td>
+                                <td><span t-field="payout.paid_date"/></td><td class="text-end"><span t-field="payout.amount"/></td>
+                            </tr></tbody></table>
+                        </div>
+                    </section>
+                    <section class="was-card mb-4">
+                        <h2>Promotional banners</h2>
+                        <div class="was-banner-grid">
+                            <article class="was-banner" t-foreach="banners" t-as="banner">
+                                <t t-set="banner_url" t-value="banner_root + banner[1]"/>
+                                <h3 t-out="banner[0]"/>
+                                <img class="img-fluid rounded mb-3 d-block" t-att-src="banner_url" t-att-alt="banner[0]"
+                                     t-att-width="banner[2]" t-att-height="banner[3]" loading="lazy" decoding="async"/>
+                                <a class="btn btn-outline-secondary mb-3" t-att-href="banner_url" t-att-download="banner[1]">Download banner</a>
+                                <label class="form-label d-block" t-att-for="'was-snippet-%s' % banner_index">HTML for your website</label>
+                                <textarea t-att-id="'was-snippet-%s' % banner_index" class="form-control was-code" rows="3" readonly="readonly"><t t-out="'&lt;a href=&quot;%s&quot;&gt;&lt;img src=&quot;%s&quot; alt=&quot;Visit the shop&quot;&gt;&lt;/a&gt;' % (share_url, banner_url)"/></textarea>
+                            </article>
+                        </div>
+                    </section>
+                </t>
+            </main>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,52 @@
+<odoo>
+    <record id="module_category_affiliate" model="ir.module.category">
+        <field name="name">Website Affiliates</field>
+        <field name="sequence">47</field>
+    </record>
+    <record id="group_affiliate_user" model="res.groups">
+        <field name="name">Affiliate Reviewer</field>
+        <field name="category_id" ref="module_category_affiliate"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="group_affiliate_manager" model="res.groups">
+        <field name="name">Affiliate Manager</field>
+        <field name="category_id" ref="module_category_affiliate"/>
+        <field name="implied_ids" eval="[(4, ref('group_affiliate_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+    <record id="rule_affiliate_company" model="ir.rule">
+        <field name="name">Affiliate affiliate by allowed company</field>
+        <field name="model_id" ref="model_wa_affiliate"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_entry_company" model="ir.rule">
+        <field name="name">Affiliate entry by allowed company</field>
+        <field name="model_id" ref="model_wa_entry"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_payout_company" model="ir.rule">
+        <field name="name">Affiliate payout by allowed company</field>
+        <field name="model_id" ref="model_wa_payout"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_rule_company" model="ir.rule">
+        <field name="name">Affiliate rule by allowed company</field>
+        <field name="model_id" ref="model_wa_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_click_company" model="ir.rule">
+        <field name="name">Affiliate click by allowed company</field>
+        <field name="model_id" ref="model_wa_click"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_customer_company" model="ir.rule">
+        <field name="name">Affiliate customer by allowed company</field>
+        <field name="model_id" ref="model_wa_customer"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_leaderboard_company" model="ir.rule">
+        <field name="name">Affiliate leaderboard by allowed company</field>
+        <field name="model_id" ref="model_wa_leaderboard"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

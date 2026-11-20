@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wa_affiliate_staff,wa.affiliate staff,model_wa_affiliate,group_affiliate_user,1,0,0,0
+access_wa_entry_staff,wa.entry staff,model_wa_entry,group_affiliate_user,1,0,0,0
+access_wa_payout_staff,wa.payout staff,model_wa_payout,group_affiliate_user,1,0,0,0
+access_wa_rule_staff,wa.rule staff,model_wa_rule,group_affiliate_user,1,0,0,0
+access_wa_click_staff,wa.click staff,model_wa_click,group_affiliate_user,1,0,0,0
+access_wa_customer_staff,wa.customer staff,model_wa_customer,group_affiliate_user,1,0,0,0
+access_wa_affiliate_manager,wa.affiliate manager,model_wa_affiliate,group_affiliate_manager,1,1,1,0
+access_wa_rule_manager,wa.rule manager,model_wa_rule,group_affiliate_manager,1,1,1,1
+access_wa_settings_manager,wa.settings manager,model_wa_settings,group_affiliate_manager,1,1,1,1
+access_wa_leaderboard_staff,wa.leaderboard staff,model_wa_leaderboard,group_affiliate_user,1,0,0,0

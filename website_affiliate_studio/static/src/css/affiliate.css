@@ -1,0 +1,42 @@
+.was-portal {
+    --was-text: #172e2a;
+    --was-accent: #0d5e50;
+    --was-edge: #d8e5df;
+    color: var(--was-text);
+}
+.was-dashboard { padding-block: 1rem 2.5rem; }
+.was-hero {
+    background: #143a31;
+    border-radius: 1.15rem;
+    color: #fff;
+    padding: clamp(1.5rem, 5vw, 4rem);
+}
+.was-hero h1 { color: inherit; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.05; }
+.was-hero p { color: #dcefe6; max-width: 38rem; margin: 0.8rem 0 0; }
+.was-card {
+    background: #fff;
+    border: 1px solid var(--was-edge);
+    border-radius: 1rem;
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+}
+.was-card h2 { color: var(--was-text); font-size: 1.2rem; margin-bottom: 0.9rem; }
+.was-hero-photo { padding: 0; overflow: hidden; }
+.was-hero-copy { padding: clamp(1.5rem, 4vw, 3rem); }
+.was-enrollment-image { display: block; width: 100%; height: auto; }
+.was-banner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1rem; }
+.was-banner { min-width: 0; border: 1px solid var(--was-edge); border-radius: .85rem; padding: 1rem; }
+.was-banner h3 { color: var(--was-text); font-size: 1rem; margin-bottom: .7rem; }
+.was-banner img { width: 100%; height: auto; }
+.was-terms { white-space: pre-wrap; }
+.was-button, .was-button:hover, .was-button:focus {
+    color: #fff;
+    background: var(--was-accent);
+    border-color: var(--was-accent);
+}
+.was-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: .8rem; }
+.was-metrics strong { display: block; font-size: 1.55rem; overflow-wrap: anywhere; }
+.was-code { font-family: ui-monospace, monospace; font-size: .85rem; }
+.was-chart { display: flex; gap: 4px; min-height: 7.5rem; overflow-x: auto; }
+.was-chart-day { min-width: 20px; flex: 1 0 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+.was-chart-day small { font-size: .64rem; writing-mode: vertical-rl; margin-top: .3rem; }
+.was-chart-bar { background: #237e68; width: 73%; border-radius: .3rem .3rem 0 0; min-height: 2px; }
